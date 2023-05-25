@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 
 import HttpError from './models/http-error';
+import { routes } from "./routes"
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
+app.use('/api', routes)
 
 app.use((req, res, next) => {
   const error = new HttpError('This route is not available', 404);
