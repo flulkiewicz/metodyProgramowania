@@ -4,20 +4,16 @@ import mongoose from 'mongoose';
 
 import HttpError from '../models/http-error';
 import Movie, { IMovie } from '../models/movie';
+import MovieList, { IMovieList } from '../models/movieList';
 import User from '../models/user';
 
 const funcGetMovieById = async (
-    doPopulate: boolean,
     movieId: string,
     next: NextFunction
   ): Promise<IMovie | any> => {
     let movie: IMovie | null;
     try {
-      if (doPopulate === true) {
-        movie = await Movie.findById(movieId)
-      } else {
-        movie = await Movie.findById(movieId)
-      }
+      movie = await Movie.findById(movieId)
     } catch (err) {
       const error = new HttpError('Unable to get movie', 500);
       return next(error);
@@ -29,20 +25,73 @@ const funcGetMovieById = async (
     return movie;
   };
 
+  const funcGetMovieListById = async (
+    movieListId: string,
+    next: NextFunction
+  ): Promise<IMovieList | any> => {
+    let movieList: IMovieList | null;
+    try {
+      movieList = await MovieList.findById(movieListId)
+    } catch (err) {
+      const error = new HttpError('Unable to get movie', 500);
+      return next(error);
+    }
+    if (!movieList) {
+      const error = new HttpError('No movie with given id was found.', 404);
+      return next(error);
+    }
+    return movieList;
+  };
+
   export const getMovieById = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     const movieId = req.params.id;
-    const doPopulate = true;
-    const movie = await funcGetMovieById(doPopulate, movieId, next);
+    const movie = await funcGetMovieById(movieId, next);
   
     res.json({
       movie: movie?.toObject({ getters: true }),
     });
   };
 
+  export const addMovieToMovieList = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const { movieListId, movieId } = req.body;
+
+    let movie, movieList;
+
+    try{
+      movie = await funcGetMovieById(movieId, next);
+      movieList = await funcGetMovieListById(movieListId, next) 
+    }
+    catch (err){
+      const error = new HttpError('Unable to find movie or movie list.', 404)
+      return next(error)
+    }
+    
+  
+    try {
+      const sess = await mongoose.startSession()
+      sess.startTransaction()
+  
+      movieList.movies.push(movie)
+      await movieList.save({ session: sess })
+  
+      await sess.commitTransaction()
+    } catch (err) {
+      const error = new HttpError('Unable to add movie to list. Check error message.', 500)
+      return next(error)
+    }
+  
+    res.status(201).json({ Message: "Movie added to list." })
+  };
+
+  //TODO, dodać dodawanie do list po ID
   export const postMovie = async (
     req: Request,
     res: Response,
@@ -70,7 +119,7 @@ const funcGetMovieById = async (
       session.startTransaction();
   
       await newMovie.save({ session });
-  
+      //TODO: dodać do listy
       await session.commitTransaction();
     } catch (err) {
       const error = new HttpError('Unable to create movie. Check error message.', 500);
@@ -92,7 +141,7 @@ const funcGetMovieById = async (
       const { name, description, genre } = req.body;
   
       const doPopulate: boolean = false;
-      const movie = await funcGetMovieById(doPopulate, movieId, next);
+      const movie = await funcGetMovieById(movieId, next);
   
       movie.name = name;
       movie.description = description;
@@ -116,11 +165,11 @@ const funcGetMovieById = async (
     try {
       const movieId = req.params.id;
       const doPopulate = true;
-      const movie = await funcGetMovieById(doPopulate, movieId, next);
+      const movie = await funcGetMovieById(movieId, next);
   
       const sess = await mongoose.startSession();
       sess.startTransaction();
-  
+      //TODO Usunąć z listy po dodaniu dodawania do list
       await movie.deleteOne({ session: sess });
   
       await sess.commitTransaction();
