@@ -79,5 +79,55 @@ const funcGetMovieById = async (
   
     res.status(201).json({ movie: newMovie });
   };
+
+  export const updateMovie = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        const error = new HttpError('Validation error', 422);
+        return next(error);
+      }
   
+      const movieId: string = req.params.id;
+      const { name, description, genre } = req.body;
   
+      const doPopulate: boolean = false;
+      const movie = await funcGetMovieById(doPopulate, movieId, next);
+  
+      movie.name = name;
+      movie.description = description;
+      movie.genre = genre;
+  
+      try {
+        await movie.save();
+      } catch (err) {
+        const error = new HttpError('Unable to save movie', 500);
+        return next(error);
+      }
+  
+      res.status(200).json({ movie: movie.toObject({ getters: true }) });
+    } catch (err) {
+      const error = new HttpError('An error occurred.', 500);
+      return next(error);
+    }
+  };
+  
+  export const deleteMovie = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const movieId = req.params.id;
+      const doPopulate = true;
+      const movie = await funcGetMovieById(doPopulate, movieId, next);
+  
+      const sess = await mongoose.startSession();
+      sess.startTransaction();
+  
+      await movie.deleteOne({ session: sess });
+  
+      await sess.commitTransaction();
+    } catch (err) {
+      const error = new HttpError(`Unable to delete movie.`, 500);
+      return next(error);
+    }
+  
+    res.status(200).json({ message: `Movie successfully deleted.` });
+  };
