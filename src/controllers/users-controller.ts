@@ -42,10 +42,12 @@ export const signup = async (req: Request, res: Response, next: NextFunction): P
 
 	const validationErrors = validationResult(req);
 
+    
 	if (!validationErrors.isEmpty()) {
 		const error = new HttpError('Validation failed. Check if your input is valid.', 422);
 		return next(error);
 	}
+    
 
 	let existingUser;
 	try {
