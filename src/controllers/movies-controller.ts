@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import HttpError from '../models/http-error'
 import Movie, { IMovie } from '../models/movie'
 import MovieList, { IMovieList } from '../models/movieList'
+import { getMovieDescription } from '../utils/description'
 import User from '../models/user'
 
 const funcGetMovieById = async (movieId: string, next: NextFunction): Promise<IMovie | any> => {
@@ -103,11 +104,11 @@ export const postMovie = async (req: Request, res: Response, next: NextFunction)
 		return next(error)
 	}
 
-	const { name, description, genre } = req.body
+	const { name, genre } = req.body
 
 	const newMovie = new Movie({
 		name,
-		description,
+		description: await getMovieDescription(name),
 		genre,
 	})
 

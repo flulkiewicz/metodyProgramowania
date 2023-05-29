@@ -31,8 +31,10 @@ app.use((err: any, req: any, res: any, next: any) => {
 	res.json({ message: err.message || 'Unknown error occurred.' })
 })
 
+const mongo_connection_string : string = process.env.MONGO_URI!
+
 mongoose
-	.connect(process.env.MONGO_URI!)
+	.connect("mongodb+srv://wsb123:wsb123@atlascluster.rv2ka7q.mongodb.net/?retryWrites=true&w=majority")
 	.then(() => {
 		app.listen(5000)
 	})
