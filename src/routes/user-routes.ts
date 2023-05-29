@@ -2,12 +2,9 @@ import { check } from 'express-validator'
 import { Router } from 'express'
 
 import { getUser, getUsers, signup, login } from '../controllers/users-controller'
+import { authMiddleware } from '../middleware/auth'
 
 export const user = Router()
-
-user.get('/:id', getUser)
-
-user.get('/', getUsers)
 
 user.post('/signup',
  [
@@ -17,3 +14,9 @@ user.post('/signup',
 ], signup)
 
 user.post('/login', login)
+
+user.use(authMiddleware)
+
+user.get('/:id', getUser)
+
+user.get('/', getUsers)
