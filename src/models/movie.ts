@@ -1,22 +1,21 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IMovie extends Document {
-  name: string;
-  description: string;
-  genre: string;
-  users: mongoose.Types.ObjectId[];
-  lists: mongoose.Types.ObjectId[];
+	name: string
+	description: string
+	genre: string
+	users: mongoose.Types.ObjectId[]
+	lists: mongoose.Types.ObjectId[]
 }
 
 //TODO - po dodaniu endpointow dla usera zmienic required
 const movieSchema: Schema<IMovie> = new Schema({
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  genre: { type: String, required: true },
-  users: [{ type: mongoose.Types.ObjectId, required: false, ref: 'User' }],
-  lists: [{ type: mongoose.Types.ObjectId, required: true, ref: 'MovieList' }]
-});
+	name: { type: String, required: true },
+	description: { type: String, required: true },
+	genre: { type: String, required: true },
+	lists: [{ type: mongoose.Types.ObjectId, required: true, ref: 'MovieList' }],
+})
 
-const Movie = mongoose.model<IMovie>('Movie', movieSchema);
+const Movie = mongoose.model<IMovie>('Movie', movieSchema)
 
-export default Movie;
+export default Movie
