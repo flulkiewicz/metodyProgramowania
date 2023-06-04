@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/12</span>
+                <span class='fraction'>12/12</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -92,39 +92,39 @@
 <a name='L27'></a><a href='#L27'>27</a>
 <a name='L28'></a><a href='#L28'>28</a>
 <a name='L29'></a><a href='#L29'>29</a>
-<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L30'></a><a href='#L30'>30</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { check } from 'express-validator'</span>
-<span class="cstat-no" title="statement not covered" >import { Router } from 'express'</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { check } from 'express-validator'
+import { Router } from 'express'
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import {</span>
+import {
 	addMovieToMovieList,
 	deleteMovie,
 	getMovieById,
@@ -132,24 +132,24 @@
 	postMovie,
 	updateMovie,
 } from '../controllers/movies-controller'
-<span class="cstat-no" title="statement not covered" >import { authMiddleware } from '../middleware/auth'</span>
+import { authMiddleware } from '../middleware/auth'
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >movie = Router()</span>
+export const movie = Router()
 &nbsp;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >movie.get('/', getMovies)</span>
+movie.get('/', getMovies)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >movie.get('/:id', getMovieById)</span>
+movie.get('/:id', getMovieById)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >movie.use(authMiddleware)</span>
+movie.use(authMiddleware)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >movie.post('/', [check('name').notEmpty()], postMovie)</span>
+movie.post('/', [check('name').notEmpty()], postMovie)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >movie.post('/list', [check('movieListId').notEmpty(), check('movieId').notEmpty()], addMovieToMovieList)</span>
+movie.post('/list', [check('movieListId').notEmpty(), check('movieId').notEmpty()], addMovieToMovieList)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >movie.patch('/:id', [check('name').notEmpty(), check('description').isLength({ min: 5 })], updateMovie)</span>
+movie.patch('/:id', [check('name').notEmpty(), check('description').isLength({ min: 5 })], updateMovie)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >movie.delete('/:id', deleteMovie)</span>
+movie.delete('/:id', deleteMovie)
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -157,7 +157,7 @@ export const <span class="cstat-no" title="statement not covered" >movie = Route
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-03T13:04:51.896Z
+                at 2023-06-04T14:18:21.134Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
