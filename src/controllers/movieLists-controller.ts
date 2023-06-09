@@ -5,7 +5,23 @@ import mongoose from 'mongoose'
 import Movie, { IMovie } from '../models/movie'
 import HttpError from '../models/http-error'
 import MovieList, { IMovieList } from '../models/movieList'
-import User from '../models/user'
+import User, { IUser } from '../models/user'
+import { user } from '../routes/user-routes'
+
+const funcGetUserById = async (userId: string, next: NextFunction): Promise<IMovie | any> => {
+	let user: IUser | null
+	try {
+		user = await User.findById(userId)
+	} catch (err) {
+		const error = new HttpError('Unable to get movie, this shouldnt', 500)
+		return next(error)
+	}
+	if (!user) {
+		const error = new HttpError('No user with given id was found.', 404)
+		return next(error)
+	}
+	return user
+}
 
 const funcGetMovieById = async (movieId: string, next: NextFunction): Promise<IMovie | any> => {
 	let movie: IMovie | null
@@ -38,7 +54,6 @@ const funcGetMovieListById = async (movieListId: string, next: NextFunction): Pr
 }
 
 export const getMovieLists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-
 	let movieList
 
 	try {
@@ -57,7 +72,6 @@ export const getMovieLists = async (req: Request, res: Response, next: NextFunct
 	})
 }
 
-
 export const getMovieListById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const movieListId = req.params.id
 
@@ -68,7 +82,6 @@ export const getMovieListById = async (req: Request, res: Response, next: NextFu
 	})
 }
 
-//TODO: Dodać do usera
 export const postMovieList = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const validationErrors = validationResult(req)
 
@@ -77,18 +90,25 @@ export const postMovieList = async (req: Request, res: Response, next: NextFunct
 		return next(error)
 	}
 
-	const { name, description } = req.body
+	const { name, description, userId } = req.body
 
 	const newMovieList = new MovieList({
 		name,
 		description,
+		user: userId,
 	})
+
+	let userDb
 
 	try {
 		const session = await mongoose.startSession()
 		session.startTransaction()
 
+		userDb = await funcGetUserById(userId, next)
+
 		await newMovieList.save({ session })
+		userDb.lists.push(newMovieList)
+		await userDb.save({ session })
 
 		await session.commitTransaction()
 	} catch (err) {
@@ -140,23 +160,29 @@ export const updateMovieList = async (req: Request, res: Response, next: NextFun
 	}
 }
 
-
 export const deleteMovieList = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const movieListId = req.params.id
 		const doPopulate = true
 		const movieList = await funcGetMovieListById(movieListId, next)
 
+		const userId = movieList.user
+		let user = await funcGetUserById(userId, next)
+
 		const sess = await mongoose.startSession()
 		sess.startTransaction()
 
+		
+		user.lists.pull(movieList)
+		await user.save({ session: sess })
+		
 		const movies = movieList.movies
 
 		for (const movieId of movies) {
-			const movie = await funcGetMovieById(movieId, next);
-			movie?.lists.pull(movieList);
-			await movie.save({ session: sess });
-		  }
+			const movie = await funcGetMovieById(movieId, next)
+			movie?.lists.pull(movieList)
+			await movie.save({ session: sess })
+		}
 
 		await movieList.deleteOne({ session: sess })
 

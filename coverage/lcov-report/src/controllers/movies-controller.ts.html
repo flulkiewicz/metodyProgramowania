@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">32.14% </span>
+                <span class="strong">30.25% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>36/112</span>
+                <span class='fraction'>36/119</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.55% </span>
+                <span class="strong">25.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>27/98</span>
+                <span class='fraction'>27/105</span>
             </div>
         
             
@@ -243,7 +243,10 @@
 <a name='L178'></a><a href='#L178'>178</a>
 <a name='L179'></a><a href='#L179'>179</a>
 <a name='L180'></a><a href='#L180'>180</a>
-<a name='L181'></a><a href='#L181'>181</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -297,16 +300,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -327,7 +325,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -362,7 +361,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -412,6 +410,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -457,7 +463,7 @@ const funcGetMovieListById = <span class="fstat-no" title="function not covered"
 <span class="cstat-no" title="statement not covered" >		return next(error)</span>
 	}
 <span class="cstat-no" title="statement not covered" >	<span class="missing-if-branch" title="if path not taken" >I</span>if (!movieList) {</span>
-		const error = <span class="cstat-no" title="statement not covered" >new HttpError('No movie with given id was found.', 404)</span>
+		const error = <span class="cstat-no" title="statement not covered" >new HttpError('No movie list with given id was found.', 404)</span>
 <span class="cstat-no" title="statement not covered" >		return next(error)</span>
 	}
 <span class="cstat-no" title="statement not covered" >	return movieList</span>
@@ -477,8 +483,6 @@ export const getMovies = async (req: Request, res: Response, next: NextFunction)
 	})
 }
 &nbsp;
-&nbsp;
-&nbsp;
 export const getMovieById = async (req: Request, res: Response, next: NextFunction): Promise&lt;void&gt; =&gt; {
 	const movieId = req.params.id
 	const movie = await funcGetMovieById(movieId, next)
@@ -487,9 +491,6 @@ export const getMovieById = async (req: Request, res: Response, next: NextFuncti
 		movie: movie?.toObject({ getters: true }),
 	})
 }
-&nbsp;
-&nbsp;
-&nbsp;
 &nbsp;
 export const addMovieToMovieList = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response, next: NextFunction): Promise&lt;void&gt; =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span>
 	const { movieListId, movieId } = <span class="cstat-no" title="statement not covered" >req.body</span>
@@ -507,8 +508,9 @@ export const addMovieToMovieList = <span class="fstat-no" title="function not co
 <span class="cstat-no" title="statement not covered" >	try {</span>
 		const sess = <span class="cstat-no" title="statement not covered" >await mongoose.startSession()</span>
 <span class="cstat-no" title="statement not covered" >		sess.startTransaction()</span>
-&nbsp;
+<span class="cstat-no" title="statement not covered" >		movie.lists.push(movieList)</span>
 <span class="cstat-no" title="statement not covered" >		movieList.movies.push(movie)</span>
+<span class="cstat-no" title="statement not covered" >		await movie.save({ session: sess })</span>
 <span class="cstat-no" title="statement not covered" >		await movieList.save({ session: sess })</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >		await sess.commitTransaction()</span>
@@ -542,7 +544,6 @@ export const postMovie = <span class="fstat-no" title="function not covered" >as
 <span class="cstat-no" title="statement not covered" >		session.startTransaction()</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >		await newMovie.save({ session })</span>
-		//TODO: dodać do listy
 <span class="cstat-no" title="statement not covered" >		await session.commitTransaction()</span>
 	} catch (err) {
 		const error = <span class="cstat-no" title="statement not covered" >new HttpError('Unable to create movie. Check error message.', 500)</span>
@@ -592,12 +593,20 @@ export const deleteMovie = <span class="fstat-no" title="function not covered" >
 &nbsp;
 		const sess = <span class="cstat-no" title="statement not covered" >await mongoose.startSession()</span>
 <span class="cstat-no" title="statement not covered" >		sess.startTransaction()</span>
-		//TODO Usunąć z listy po dodaniu dodawania do list
+&nbsp;
+		const lists = <span class="cstat-no" title="statement not covered" >movie.lists</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >		for (const listId of lists) {</span>
+			const list = <span class="cstat-no" title="statement not covered" >await funcGetMovieListById(listId, next);</span>
+<span class="cstat-no" title="statement not covered" >			list.movies.pull(movieId);</span>
+<span class="cstat-no" title="statement not covered" >			await list.save({ session: sess });</span>
+		  }
+&nbsp;
 <span class="cstat-no" title="statement not covered" >		await movie.deleteOne({ session: sess })</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >		await sess.commitTransaction()</span>
-	} catch (err) {
-		const error = <span class="cstat-no" title="statement not covered" >new HttpError(`Unable to delete movie.`, 500)</span>
+	} catch (err: any) {
+		const error = <span class="cstat-no" title="statement not covered" >new HttpError(err, 500)</span>
 <span class="cstat-no" title="statement not covered" >		return next(error)</span>
 	}
 &nbsp;
@@ -610,7 +619,7 @@ export const deleteMovie = <span class="fstat-no" title="function not covered" >
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-06-09T08:49:18.365Z
+                at 2023-06-09T11:43:38.197Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
