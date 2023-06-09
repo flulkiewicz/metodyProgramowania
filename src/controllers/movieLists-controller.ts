@@ -2,9 +2,40 @@ import { Request, Response, NextFunction } from 'express'
 import { validationResult } from 'express-validator'
 import mongoose from 'mongoose'
 
+import Movie, { IMovie } from '../models/movie'
 import HttpError from '../models/http-error'
 import MovieList, { IMovieList } from '../models/movieList'
 import User from '../models/user'
+
+const funcGetMovieById = async (movieId: string, next: NextFunction): Promise<IMovie | any> => {
+	let movie: IMovie | null
+	try {
+		movie = await Movie.findById(movieId)
+	} catch (err) {
+		const error = new HttpError('Unable to get movie, this shouldnt', 500)
+		return next(error)
+	}
+	if (!movie) {
+		const error = new HttpError('No movie with given id was found.', 404)
+		return next(error)
+	}
+	return movie
+}
+
+const funcGetMovieListById = async (movieListId: string, next: NextFunction): Promise<IMovieList | any> => {
+	let movieList: IMovieList | null
+	try {
+		movieList = await MovieList.findById(movieListId)
+	} catch (err) {
+		const error = new HttpError('Unable to get movie', 500)
+		return next(error)
+	}
+	if (!movieList) {
+		const error = new HttpError('No movie list with given id was found.', 404)
+		return next(error)
+	}
+	return movieList
+}
 
 export const getMovieLists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 
@@ -30,18 +61,7 @@ export const getMovieLists = async (req: Request, res: Response, next: NextFunct
 export const getMovieListById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const movieListId = req.params.id
 
-	let movieList
-
-	try {
-		movieList = await MovieList.findById(movieListId).populate('movies')
-	} catch (err) {
-		const error = new HttpError('Unable to get list', 500)
-		return next(error)
-	}
-	if (!movieList) {
-		const error = new HttpError('No list with given id was found.', 404)
-		return next(error)
-	}
+	let movieList = await funcGetMovieListById(movieListId, next)
 
 	res.json({
 		movieList: movieList?.toObject({ getters: true }),
@@ -121,4 +141,30 @@ export const updateMovieList = async (req: Request, res: Response, next: NextFun
 }
 
 
-//TODO: Usuwanie list
+export const deleteMovieList = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const movieListId = req.params.id
+		const doPopulate = true
+		const movieList = await funcGetMovieListById(movieListId, next)
+
+		const sess = await mongoose.startSession()
+		sess.startTransaction()
+
+		const movies = movieList.movies
+
+		for (const movieId of movies) {
+			const movie = await funcGetMovieById(movieId, next);
+			movie?.lists.pull(movieList);
+			await movie.save({ session: sess });
+		  }
+
+		await movieList.deleteOne({ session: sess })
+
+		await sess.commitTransaction()
+	} catch (err: any) {
+		const error = new HttpError(err, 500)
+		return next(error)
+	}
+
+	res.status(200).json({ message: `Movie list successfully deleted.` })
+}
