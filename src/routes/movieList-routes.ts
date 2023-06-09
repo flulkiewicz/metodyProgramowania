@@ -1,12 +1,14 @@
 import { check } from 'express-validator'
 import { Router } from 'express'
 
-import { getMovieListById, postMovieList, updateMovieList } from '../controllers/movieLists-controller'
+import { getMovieListById, postMovieList, updateMovieList, getMovieLists } from '../controllers/movieLists-controller'
 import { authMiddleware } from '../middleware/auth'
 
 export const movieList = Router()
 
 movieList.use(authMiddleware)
+
+movieList.get('/', getMovieLists)
 
 movieList.get('/:id', getMovieListById)
 

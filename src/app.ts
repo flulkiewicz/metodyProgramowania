@@ -1,11 +1,13 @@
 import express from "express";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 import HttpError from "./models/http-error";
 import { routes } from "./routes";
 
 const app = express();
+dotenv.config();
 
 export { app };
 // ^ Potrzebne do testów.
@@ -37,11 +39,9 @@ app.use((err: any, req: any, res: any, next: any) => {
   res.json({ message: err.message || "Unknown error occurred." });
 });
 
-const mongo_connection_string: string = process.env.MONGO_URI!;
-
 mongoose
   .connect(
-    "mongodb+srv://wsb123:wsb123@atlascluster.rv2ka7q.mongodb.net/?retryWrites=true&w=majority"
+    process.env.MONGO_URI!
   )
   .then(() => {
     app.listen(5000);

@@ -32,7 +32,7 @@ const funcGetMovieListById = async (movieListId: string, next: NextFunction): Pr
 		return next(error)
 	}
 	if (!movieList) {
-		const error = new HttpError('No movie with given id was found.', 404)
+		const error = new HttpError('No movie list with given id was found.', 404)
 		return next(error)
 	}
 	return movieList
@@ -52,8 +52,6 @@ export const getMovies = async (req: Request, res: Response, next: NextFunction)
 	})
 }
 
-
-
 export const getMovieById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const movieId = req.params.id
 	const movie = await funcGetMovieById(movieId, next)
@@ -62,9 +60,6 @@ export const getMovieById = async (req: Request, res: Response, next: NextFuncti
 		movie: movie?.toObject({ getters: true }),
 	})
 }
-
-
-
 
 export const addMovieToMovieList = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const { movieListId, movieId } = req.body
@@ -82,8 +77,9 @@ export const addMovieToMovieList = async (req: Request, res: Response, next: Nex
 	try {
 		const sess = await mongoose.startSession()
 		sess.startTransaction()
-
+		movie.lists.push(movieList)
 		movieList.movies.push(movie)
+		await movie.save({ session: sess })
 		await movieList.save({ session: sess })
 
 		await sess.commitTransaction()
@@ -117,7 +113,6 @@ export const postMovie = async (req: Request, res: Response, next: NextFunction)
 		session.startTransaction()
 
 		await newMovie.save({ session })
-		//TODO: dodać do listy
 		await session.commitTransaction()
 	} catch (err) {
 		const error = new HttpError('Unable to create movie. Check error message.', 500)
@@ -167,12 +162,20 @@ export const deleteMovie = async (req: Request, res: Response, next: NextFunctio
 
 		const sess = await mongoose.startSession()
 		sess.startTransaction()
-		//TODO Usunąć z listy po dodaniu dodawania do list
+
+		const lists = movie.lists
+
+		for (const listId of lists) {
+			const list = await funcGetMovieListById(listId, next);
+			list.movies.pull(movieId);
+			await list.save({ session: sess });
+		  }
+
 		await movie.deleteOne({ session: sess })
 
 		await sess.commitTransaction()
-	} catch (err) {
-		const error = new HttpError(`Unable to delete movie.`, 500)
+	} catch (err: any) {
+		const error = new HttpError(err, 500)
 		return next(error)
 	}
 

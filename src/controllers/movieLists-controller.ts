@@ -6,6 +6,27 @@ import HttpError from '../models/http-error'
 import MovieList, { IMovieList } from '../models/movieList'
 import User from '../models/user'
 
+export const getMovieLists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+
+	let movieList
+
+	try {
+		movieList = await MovieList.find().populate('movies')
+	} catch (err) {
+		const error = new HttpError('Unable to get list', 500)
+		return next(error)
+	}
+	if (!movieList) {
+		const error = new HttpError('No list with given id was found.', 404)
+		return next(error)
+	}
+
+	res.json({
+		movieList: movieList.map(m => m.toObject({ getters: true })),
+	})
+}
+
+
 export const getMovieListById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const movieListId = req.params.id
 
@@ -98,3 +119,6 @@ export const updateMovieList = async (req: Request, res: Response, next: NextFun
 		return next(error)
 	}
 }
+
+
+//TODO: Usuwanie list

@@ -9,13 +9,12 @@ export const getMovieDescription = async (title: string): Promise<string> => {
 		method: 'GET',
 		headers: {
 			accept: 'application/json',
-			Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmOWUyODEzMjM1Yjg1MTU0NThmNzQxMzIyYWQzYjE2OSIsInN1YiI6IjY0NzQ5MGM4ZGQ3MzFiMmQ3NjJjMTU3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.zBm0OFg54ZSzbwkz7iDrqo9RKVNa0nhLlw7wvr8uvEY`
+			Authorization: `Bearer ${process.env.API_READ_ACCESS_TOKEN!}`
 		},
 	}
-
+	
 	fetch(url, options)
 		.then(res => res.json())
-		.then(json => console.log(json))
 		.catch(err => console.error('error:' + err))
 
 	try {

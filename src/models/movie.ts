@@ -4,11 +4,9 @@ export interface IMovie extends Document {
 	name: string
 	description: string
 	genre: string
-	users: mongoose.Types.ObjectId[]
 	lists: mongoose.Types.ObjectId[]
 }
 
-//TODO - po dodaniu endpointow dla usera zmienic required
 const movieSchema: Schema<IMovie> = new Schema({
 	name: { type: String, required: true },
 	description: { type: String, required: true },
