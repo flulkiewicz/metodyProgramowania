@@ -13,7 +13,7 @@ const funcGetMovieById = async (movieId: string, next: NextFunction): Promise<IM
 	try {
 		movie = await Movie.findById(movieId)
 	} catch (err) {
-		const error = new HttpError('Unable to get movie, this shouldnt', 500)
+		const error = new HttpError('Unable to get movie', 500)
 		return next(error)
 	}
 	if (!movie) {
@@ -91,7 +91,6 @@ export const addMovieToMovieList = async (req: Request, res: Response, next: Nex
 	res.status(201).json({ Message: 'Movie added to list.' })
 }
 
-//TODO, dodać dodawanie do list po ID
 export const postMovie = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 	const validationErrors = validationResult(req)
 
